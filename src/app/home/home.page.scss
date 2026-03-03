@@ -1,0 +1,132 @@
+.home-content {
+  --background: #0a0a0f;
+}
+
+.custom-toolbar {
+  --background: #111118;
+  --border-color: #1a1a27;
+
+  .brand {
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 1px;
+  }
+
+  .accent { color: #4fc3f7; }
+
+  .logout-btn {
+    --color: #555;
+    &:hover { --color: #ef5350; }
+  }
+}
+
+.hero-section {
+  padding: 28px 22px 10px;
+
+  .hero-sub {
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    margin-top: 4px;
+
+    span { color: #4fc3f7; }
+  }
+}
+
+.action-section {
+  padding: 16px 22px;
+
+  .btn-photo {
+    --background: linear-gradient(135deg, #1565c0, #0d47a1);
+    --border-radius: 16px;
+    --box-shadow: 0 4px 24px rgba(21, 101, 192, 0.4);
+    height: 54px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+}
+
+.stats-bar {
+  margin: 0 22px 20px;
+  background: #111118;
+  border: 1px solid #1e1e2e;
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  gap: 24px;
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #4fc3f7;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+  }
+}
+
+.section-title {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #4fc3f7;
+  opacity: 0.6;
+  padding: 0 22px 12px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 20px;
+
+  .empty-icon { font-size: 48px; margin-bottom: 16px; }
+
+  p {
+    font-size: 16px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+  }
+
+  span {
+    font-size: 13px;
+    color: #333;
+    text-align: center;
+  }
+}
+
+.photo-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #1e1e2e;
+  background: #111118;
+  margin-bottom: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+  ion-img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+  }
+}

@@ -1,0 +1,51 @@
+<ion-content class="login-content">
+
+  <!-- LOGO / HEADER -->
+  <div class="login-header">
+    <div class="logo-icon">⚡</div>
+    <h1 class="brand">Tienda<span>King</span></h1>
+    <p class="tagline">Tecnología al poder</p>
+  </div>
+
+  <!-- CARD FORMULARIO -->
+  <div class="login-card">
+
+    <h2 class="card-title">{{ isLoginMode ? 'Iniciar Sesión' : 'Crear Cuenta' }}</h2>
+
+    <div class="input-group">
+      <label>Correo electrónico</label>
+      <ion-input
+        type="email"
+        placeholder="usuario@email.com"
+        [(ngModel)]="email"
+        class="custom-input">
+      </ion-input>
+    </div>
+
+    <div class="input-group">
+      <label>Contraseña</label>
+      <ion-input
+        type="password"
+        placeholder="••••••••"
+        [(ngModel)]="password"
+        class="custom-input">
+      </ion-input>
+    </div>
+
+    <ion-button expand="block" class="btn-main" (click)="submit()">
+      {{ isLoginMode ? 'INICIAR SESIÓN' : 'REGISTRARSE' }}
+    </ion-button>
+
+    <div class="divider">— o —</div>
+
+    <ion-button expand="block" fill="clear" class="btn-ghost" (click)="toggleMode()">
+      {{ isLoginMode ? 'Crear cuenta nueva' : 'Ya tengo cuenta' }}
+    </ion-button>
+
+    <div class="error-msg" *ngIf="errorMessage">
+      ⚠️ {{ errorMessage }}
+    </div>
+
+  </div>
+
+</ion-content>

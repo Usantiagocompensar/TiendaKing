@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1095056520607",
+    "project_id": "tiendaking-1f90f",
+    "storage_bucket": "tiendaking-1f90f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095056520607:android:8ea6b3977363dba5ca79aa",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhNI_l6YaihVuj0H8sd_oYrMEQ2m1vayo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
