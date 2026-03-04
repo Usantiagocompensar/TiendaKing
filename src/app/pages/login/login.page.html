@@ -32,7 +32,13 @@
       </ion-input>
     </div>
 
-    <ion-button expand="block" class="btn-main" (click)="submit()">
+    <!-- SPINNER DE CARGA -->
+    <div class="loading-overlay" *ngIf="isSubmitting">
+      <div class="spinner"></div>
+      <p>{{ isLoginMode ? 'Iniciando sesión...' : 'Creando cuenta...' }}</p>
+    </div>
+
+    <ion-button expand="block" class="btn-main" (click)="submit()" [disabled]="isSubmitting">
       {{ isLoginMode ? 'INICIAR SESIÓN' : 'REGISTRARSE' }}
     </ion-button>
 

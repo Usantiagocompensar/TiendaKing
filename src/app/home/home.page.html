@@ -4,7 +4,7 @@
       <span class="brand">Tienda<span class="accent">King</span></span>
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="logout()" class="logout-btn">
+      <ion-button (click)="confirmLogout()" class="logout-btn">
         <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -15,13 +15,13 @@
 
   <!-- HERO -->
   <div class="hero-section">
-    <p class="hero-sub">Gestiona tu catálogo</p>
+    <p class="hero-sub">{{ userEmail }}</p>
     <h2 class="hero-title">📸 Galería <span>King</span></h2>
   </div>
 
   <!-- BOTÓN TOMAR FOTO -->
   <div class="action-section">
-    <ion-button expand="block" class="btn-photo" (click)="addPhoto()">
+    <ion-button expand="block" class="btn-photo" (click)="addPhoto()" [disabled]="isLoading">
       <ion-icon name="camera-outline" slot="start"></ion-icon>
       Tomar Foto
     </ion-button>
@@ -35,20 +35,33 @@
     </div>
   </div>
 
-  <!-- GRID DE FOTOS -->
   <div class="section-title">Catálogo</div>
 
-  <div class="empty-state" *ngIf="photos.length === 0">
+  <!-- SPINNER MIENTRAS CARGA -->
+  <div class="loading-photos" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Cargando fotos...</p>
+  </div>
+
+  <!-- VACÍO -->
+  <div class="empty-state" *ngIf="!isLoading && photos.length === 0">
     <div class="empty-icon">📷</div>
     <p>Aún no hay fotos</p>
     <span>Toca el botón para agregar la primera</span>
   </div>
 
-  <ion-grid *ngIf="photos.length > 0">
+  <!-- GRID -->
+  <ion-grid *ngIf="!isLoading && photos.length > 0">
     <ion-row>
       <ion-col size="6" *ngFor="let photo of photos">
-        <div class="photo-card">
-          <ion-img [src]="photo"></ion-img>
+        <div class="photo-wrapper">
+          <div class="photo-card">
+            <ion-img [src]="photo.image"></ion-img>
+          </div>
+          <!-- Botón FUERA del photo-card para evitar overflow:hidden -->
+          <button class="delete-btn" (click)="confirmDelete(photo.id)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
         </div>
       </ion-col>
     </ion-row>

@@ -6,6 +6,8 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
+import { defineCustomElements } from '@ionic/pwa-elements/loader'; // ✅ nuevo
+
 // 🔥 CONFIGURACIÓN DE FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyCkNHZm0PcVUOFHCLQmZ2L05rqTcim44ls",
@@ -29,3 +31,6 @@ export const storage = getStorage(app);
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
   .catch(err => console.log(err));
+
+// 📷 Habilitar cámara en navegador web
+defineCustomElements(window);

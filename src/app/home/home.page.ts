@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { PhotoService } from '../services/photo.service';       // Servicio para capturar fotos
-import { AuthService } from '../services/auth.service';         // Servicio de autenticación
-import { FirestoreService } from '../services/firestore.service'; // Servicio de base de datos
-import { IonicModule } from '@ionic/angular';
+import { PhotoService } from '../services/photo.service';
+import { AuthService } from '../services/auth.service';
+import { FirestoreService } from '../services/firestore.service';
+import { IonicModule, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 // Componente standalone de la página principal (galería de fotos)
 @Component({
@@ -16,47 +17,112 @@ import { CommonModule } from '@angular/common';
 })
 export class HomePage implements OnInit {
 
-  // Arreglo que almacena las fotos en formato base64
-  photos: string[] = [];
+  // Arreglo de fotos con ID y base64
+  photos: { id: string, image: string }[] = [];
+
+  // Correo del usuario autenticado
+  userEmail: string = '';
+
+  // Controla el spinner de carga inicial
+  isLoading: boolean = true;
 
   constructor(
-    private photoService: PhotoService,       // Inyección del servicio de cámara
-    private authService: AuthService,         // Inyección del servicio de autenticación
-    private firestoreService: FirestoreService, // Inyección del servicio Firestore
-    private router: Router                    // Inyección del router para navegación
+    private photoService: PhotoService,
+    private authService: AuthService,
+    private firestoreService: FirestoreService,
+    private router: Router,
+    private alertController: AlertController,
+    private cdr: ChangeDetectorRef //  detector de cambios
   ) {}
 
-  // Se ejecuta al iniciar el componente, carga las fotos del usuario
+  // Espera a que Firebase confirme la sesión antes de cargar fotos
   async ngOnInit() {
+    await new Promise<void>((resolve) => {
+      const auth = getAuth();
+      const unsub = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.userEmail = user.email ?? '';
+          this.cdr.detectChanges(); //  notifica el cambio de correo
+          unsub();
+          resolve();
+        }
+      });
+    });
+
     await this.loadPhotos();
   }
 
-  // Obtiene las fotos del usuario desde Firestore
+  // Carga inicial de fotos desde Firestore
   async loadPhotos() {
     try {
+      this.isLoading = true;
       this.photos = await this.firestoreService.getUserPhotos();
     } catch (error) {
       console.error('Error cargando fotos:', error);
+    } finally {
+      this.isLoading = false;
+      this.cdr.detectChanges(); // fuerza actualizar la vista
     }
   }
 
-  // Captura una foto con la cámara y la guarda en Firestore
+  // Captura foto y la muestra inmediatamente sin esperar a Firestore
   async addPhoto() {
     try {
       const base64 = await this.photoService.takePhoto();
-      if (!base64) return; // Si no se tomó foto, no hace nada
+      if (!base64) return;
 
-      await this.firestoreService.savePhoto(base64); // Guarda en Firestore
-      await this.loadPhotos(); // Recarga la galería
+      const docRef = await this.firestoreService.savePhoto(base64);
+      if (!docRef) return;
+
+      // Agrega localmente al inicio del arreglo — aparece de inmediato
+      this.photos = [{ id: docRef.id, image: base64 }, ...this.photos];
+      this.cdr.detectChanges(); // ✅ actualiza la vista
 
     } catch (error) {
       console.error('Error tomando foto:', error);
     }
   }
 
-  // Cierra la sesión del usuario y redirige al login
-  async logout() {
-    await this.authService.logout();
-    this.router.navigateByUrl('/login');
+  // Elimina la foto localmente de inmediato y luego en Firestore
+  async confirmDelete(photoId: string) {
+    const alert = await this.alertController.create({
+      header: 'Eliminar foto',
+      message: '¿Estás seguro de que deseas eliminar esta foto?',
+      cssClass: 'custom-alert',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel', cssClass: 'alert-cancel' },
+        {
+          text: 'Eliminar',
+          cssClass: 'alert-delete',
+          handler: async () => {
+            this.photos = this.photos.filter(p => p.id !== photoId);
+            this.cdr.detectChanges(); // ✅ actualiza la vista
+            await this.firestoreService.deletePhoto(photoId);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  // Muestra confirmación antes de cerrar sesión
+  async confirmLogout() {
+    const alert = await this.alertController.create({
+      header: 'Cerrar sesión',
+      message: '¿Deseas cerrar tu sesión?',
+      cssClass: 'custom-alert',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel', cssClass: 'alert-cancel' },
+        {
+          text: 'Cerrar sesión',
+          cssClass: 'alert-delete',
+          handler: async () => {
+            await this.authService.logout();
+            this.router.navigateByUrl('/login');
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 }
