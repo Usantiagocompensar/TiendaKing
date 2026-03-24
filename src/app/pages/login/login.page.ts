@@ -16,23 +16,24 @@ import { FormsModule } from '@angular/forms';
 })
 export class LoginPage {
 
-  email: string = '';         // Campo de correo electrónico
-  password: string = '';      // Campo de contraseña
-  isLoginMode: boolean = true; // true = Login, false = Registro
-  errorMessage: string = '';  // Mensaje de error visible en pantalla
-  isSubmitting: boolean = false; // Evita redirección automática durante el submit
+  email: string = '';
+  password: string = '';
+  isLoginMode: boolean = true;
+  errorMessage: string = '';
+  isSubmitting: boolean = false;
 
   constructor(
-    private authService: AuthService,   // Inyección del servicio de autenticación
-    private router: Router,             // Inyección del router para navegación
-    private cdr: ChangeDetectorRef      // Detector de cambios para actualizar la vista
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     const auth = getAuth();
 
-    // Escucha el estado de autenticación de Firebase
-    // Si el usuario ya tiene sesión activa, redirige al Home
+    // Solo redirige si ya hay sesión activa al entrar al login
+    // y no se está procesando un submit
     onAuthStateChanged(auth, (user) => {
-      if (user && !this.isSubmitting) {
+      if (user && !this.isSubmitting && this.email === '' && this.password === '') {
+        // Solo redirige si los campos están vacíos (sesión preexistente)
         this.router.navigateByUrl('/home');
       }
     });
@@ -41,9 +42,8 @@ export class LoginPage {
   // Maneja el envío del formulario (login o registro según el modo)
   async submit() {
     this.errorMessage = '';
-    this.isSubmitting = true; // Bloquea la redirección automática
+    this.isSubmitting = true;
 
-    // Validación de campos vacíos
     if (!this.email || !this.password) {
       this.errorMessage = 'Todos los campos son obligatorios';
       this.cdr.detectChanges();
@@ -53,22 +53,20 @@ export class LoginPage {
 
     try {
       if (this.isLoginMode) {
-        await this.authService.login(this.email, this.password); // Inicia sesión
+        await this.authService.login(this.email, this.password);
       } else {
-        await this.authService.register(this.email, this.password); // Registra usuario
+        await this.authService.register(this.email, this.password);
       }
 
-      // Limpia los campos y redirige al Home
       this.email = '';
       this.password = '';
       this.router.navigateByUrl('/home');
 
     } catch (error: any) {
-      // Captura errores de Firebase y muestra mensaje amigable
       this.errorMessage = this.getFirebaseErrorMessage(error.code);
-      this.cdr.detectChanges(); // Fuerza actualización de la vista
+      this.cdr.detectChanges();
     } finally {
-      this.isSubmitting = false; // Siempre se resetea al terminar
+      this.isSubmitting = false;
     }
   }
 

@@ -1,24 +1,43 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 
 // Configuración de rutas principales de la aplicación
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login', // Ruta por defecto redirige al Login
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
     path: 'login',
-    // Carga lazy del módulo Login (mejora el rendimiento inicial)
     loadChildren: () =>
       import('./pages/login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: 'home',
-    // Carga lazy del módulo Home (solo se carga cuando el usuario navega)
     loadChildren: () =>
       import('./home/home.module').then(m => m.HomePageModule)
+  },
+  {
+    path: 'productos',
+    loadChildren: () =>
+      import('./pages/productos/productos.module').then(m => m.ProductosPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'carrito',
+    loadChildren: () =>
+      import('./pages/carrito/carrito.module').then(m => m.CarritoPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'productos',
+    loadChildren: () => import('./pages/productos/productos.module').then( m => m.ProductosPageModule)
+  },
+  {
+    path: 'carrito',
+    loadChildren: () => import('./pages/carrito/carrito.module').then( m => m.CarritoPageModule)
   }
 ];
 

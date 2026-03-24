@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="irHome()" class="back-btn">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <span class="brand">Tienda<span class="accent">King</span></span>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="irCarrito()" class="cart-btn">
+        <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
+        <ion-badge *ngIf="totalCarrito > 0" color="danger">{{ totalCarrito }}</ion-badge>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- BARRA DE BÚSQUEDA -->
+  <ion-toolbar class="search-toolbar">
+    <ion-searchbar
+      placeholder="Buscar productos..."
+      (ionInput)="filtrar($event)"
+      [(ngModel)]="busqueda"
+      class="custom-search">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="productos-content">
+
+  <!-- SPINNER -->
+  <div class="loading-box" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Cargando productos...</p>
+  </div>
+
+  <!-- GRID DE PRODUCTOS -->
+  <ion-grid *ngIf="!isLoading">
+    <ion-row>
+      <ion-col size="6" *ngFor="let producto of productosFiltrados">
+        <div class="product-card">
+          <div class="product-img">
+            <img [src]="producto.thumbnail" [alt]="producto.title">
+          </div>
+          <div class="product-info">
+            <p class="product-name">{{ producto.title | slice:0:40 }}...</p>
+            <p class="product-price">${{ producto.price | number:'1.2-2' }}</p>
+          </div>
+          <button class="btn-agregar" (click)="agregar(producto)">
+            <ion-icon name="add-outline"></ion-icon>
+            Agregar
+          </button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- VACÍO -->
+  <div class="empty-state" *ngIf="!isLoading && productosFiltrados.length === 0">
+    <div class="empty-icon">🔍</div>
+    <p>No se encontraron productos</p>
+  </div>
+
+</ion-content>

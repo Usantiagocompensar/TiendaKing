@@ -205,3 +205,12 @@
   .alert-cancel { color: #555 !important; }
   .alert-delete { color: #ef5350 !important; font-weight: 700 !important; }
 }
+
+.btn-productos {
+  --background: linear-gradient(135deg, #4fc3f7, #1565c0);
+  --border-radius: 16px;
+  margin-top: 10px;
+  height: 54px;
+  font-weight: 700;
+  font-size: 15px;
+}

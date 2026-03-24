@@ -19,11 +19,17 @@
     <h2 class="hero-title">📸 Galería <span>King</span></h2>
   </div>
 
-  <!-- BOTÓN TOMAR FOTO -->
+  <!-- BOTONES DE ACCIÓN -->
   <div class="action-section">
     <ion-button expand="block" class="btn-photo" (click)="addPhoto()" [disabled]="isLoading">
       <ion-icon name="camera-outline" slot="start"></ion-icon>
       Tomar Foto
+    </ion-button>
+
+    <!-- BOTÓN IR A TIENDA -->
+    <ion-button expand="block" class="btn-productos" (click)="router.navigateByUrl('/productos')">
+      <ion-icon name="storefront-outline" slot="start"></ion-icon>
+      Ver Tienda
     </ion-button>
   </div>
 
@@ -58,7 +64,6 @@
           <div class="photo-card">
             <ion-img [src]="photo.image"></ion-img>
           </div>
-          <!-- Botón FUERA del photo-card para evitar overflow:hidden -->
           <button class="delete-btn" (click)="confirmDelete(photo.id)">
             <ion-icon name="trash-outline"></ion-icon>
           </button>

@@ -30,9 +30,9 @@ export class HomePage implements OnInit {
     private photoService: PhotoService,
     private authService: AuthService,
     private firestoreService: FirestoreService,
-    private router: Router,
+    public router: Router, // ✅ public para usarlo desde el HTML
     private alertController: AlertController,
-    private cdr: ChangeDetectorRef //  detector de cambios
+    private cdr: ChangeDetectorRef // detector de cambios
   ) {}
 
   // Espera a que Firebase confirme la sesión antes de cargar fotos
@@ -42,7 +42,7 @@ export class HomePage implements OnInit {
       const unsub = onAuthStateChanged(auth, (user) => {
         if (user) {
           this.userEmail = user.email ?? '';
-          this.cdr.detectChanges(); //  notifica el cambio de correo
+          this.cdr.detectChanges(); // notifica el cambio de correo
           unsub();
           resolve();
         }
@@ -76,7 +76,7 @@ export class HomePage implements OnInit {
 
       // Agrega localmente al inicio del arreglo — aparece de inmediato
       this.photos = [{ id: docRef.id, image: base64 }, ...this.photos];
-      this.cdr.detectChanges(); // ✅ actualiza la vista
+      this.cdr.detectChanges(); // actualiza la vista
 
     } catch (error) {
       console.error('Error tomando foto:', error);
@@ -96,7 +96,7 @@ export class HomePage implements OnInit {
           cssClass: 'alert-delete',
           handler: async () => {
             this.photos = this.photos.filter(p => p.id !== photoId);
-            this.cdr.detectChanges(); // ✅ actualiza la vista
+            this.cdr.detectChanges(); // actualiza la vista
             await this.firestoreService.deletePhoto(photoId);
           }
         }

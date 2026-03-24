@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="irProductos()" class="back-btn">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <span class="brand">Mi <span class="accent">Carrito</span></span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="carrito-content">
+
+  <!-- VACÍO -->
+  <div class="empty-state" *ngIf="items.length === 0">
+    <div class="empty-icon">🛒</div>
+    <p>Tu carrito está vacío</p>
+    <button class="btn-ir" (click)="irProductos()">Ver productos</button>
+  </div>
+
+  <!-- LISTA DE ITEMS -->
+  <div class="items-list" *ngIf="items.length > 0">
+    <div class="item-card" *ngFor="let item of items">
+      <div class="item-img">
+        <img [src]="item.producto.thumbnail" [alt]="item.producto.title">
+      </div>
+      <div class="item-info">
+        <p class="item-name">{{ item.producto.title | slice:0:35 }}...</p>
+        <p class="item-price">${{ item.producto.price | number:'1.2-2' }}</p>
+        <div class="item-controls">
+          <button class="ctrl-btn" (click)="decrementar(item.producto.id)">−</button>
+          <span class="cantidad">{{ item.cantidad }}</span>
+          <button class="ctrl-btn" (click)="incrementar(item.producto.id)">+</button>
+          <button class="delete-btn" (click)="eliminar(item.producto.id)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ion-content>
+
+<!-- FOOTER CON TOTAL Y BOTÓN COMPRAR -->
+<ion-footer *ngIf="items.length > 0" class="carrito-footer">
+  <div class="total-section">
+    <span class="total-label">Total</span>
+    <span class="total-value">${{ total | number:'1.2-2' }}</span>
+  </div>
+  <button class="btn-comprar" (click)="comprar()">
+    <ion-icon name="card-outline"></ion-icon>
+    Confirmar Compra
+  </button>
+</ion-footer>
